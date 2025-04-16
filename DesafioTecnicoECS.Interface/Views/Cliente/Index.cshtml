@@ -1,0 +1,190 @@
+﻿@{
+    ViewData["Title"] = "Clientes";
+}
+
+<div class="row justify-content-md-center">
+    <div class="col-md-10">
+
+        <div class="alert" id="alertCliente" role="alert"></div>
+        <form id="criarCliente" name="criarCliente">
+            <h2 class="text-monospace">Novo Cliente</h2>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="nome" class="control-label">Nome do Cliente</label>
+                        <input id="nome" name="nome" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="email" class="control-label">Email</label>
+                        <input id="email" name="email" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="fileInput">Escolha um arquivo</label>
+                        <div class="custom-file">
+                            <input name="arquivo" type="file" class="custom-file-input" id="arquivo" accept="image/*">
+                            <label class="custom-file-label" for="fileInput" data-browse="Escolher">Selecione o arquivo</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button id="addCliente" type="button" class="btn btn-success">ADICIONAR</button>
+            </div>
+        </form>
+        <h2 class="text-monospace mt-4">
+            Clientes já cadastrados
+        </h2>
+
+        <table class="table table-striped" id="tbClientes">
+            <thead>
+                <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Logotipo</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        const arqBase64 = arq => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(arq);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+        });
+
+        async function leArquivo(arq) {
+            return arqBase64(arq);
+        }
+
+        $(function () {
+            new DataTable('#tbClientes', {
+                ajax: { url: "@Url.ActionLink("ListarClientes", "Cliente")", dataSrc: "" },
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+                },
+                columns: [
+                    { data: 'nome' },
+                    { data: 'email' },
+                    {
+                        data: 'logoBase64', render: function (data) {
+                            if (data == '' || data == undefined)
+                                return '';
+                            return `<img id="imagemBase64" src="${data}" width="50px">`;
+                        }
+                    },
+                    {
+                        data: 'id', render: function (data) {
+                            if (data == '' || data == undefined)
+                                return '';
+                            return `<a class="deletarCliente" onclick="deletarCliente('${data}')" href="javascript:void(0)">&#x274C;</a>`;
+                        }
+                    },
+                    {
+                        data: 'id', render: function (data) {
+                            if (data == '' || data == undefined)
+                                return '';
+                            return `<a class="deletarCliente" href="@Url.Action("Editar", "Cliente")/${data}">editar</a>`;
+                        }
+                    }
+                ]
+            });
+
+            $('#addCliente').click(async function (e) {
+                showLoading();
+                e.preventDefault();
+                const form = document.forms.criarCliente;
+
+                const { nome, email } = form;
+
+
+                if (nome.value === "") {
+                    hideLoading();
+                    alert('E necessário adicionar o nome do cliente!');
+                    return false;
+                }
+                if (email.value === "") {
+                    hideLoading();
+                    alert('E necessário adicionar o email cliente!');
+                    return false;
+                }
+
+                const obj = {};
+                obj.Id = "";
+                obj.Nome = nome.value;
+                obj.Email = email.value;
+
+                const arq = document.getElementById('arquivo').files[0];
+                const base64 = await leArquivo(arq);
+                let ext = arq.name.split('.');
+                ext = ext[ext.length - 1];
+                console.log(ext);
+                console.log(base64);
+
+                obj.Logotipo = {
+                    Base64: base64.split(',')[1],
+                    Extensao: ext
+                };
+                console.log(obj);
+
+                $.ajax({
+                    url: '/Cliente/CriarCliente',
+                    method: 'POST',
+                    data: JSON.stringify(obj),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        var ret = JSON.parse(data.ret)
+                        console.log(data.sucesso);
+                        console.log(ret);
+                        console.log(ret.exibicaoMensagem);
+                        if (data.sucesso) {
+                            $('#alertCliente').addClass('alert-success');
+                            $('#alertCliente').removeClass('alert-danger');
+                            $('#alertCliente').html('cliente cadastrado com sucesso!');
+                            $('#alertCliente').fadeIn();
+                        } else {
+                            $('#alertCliente').addClass('alert-danger');
+                            $('#alertCliente').removeClass('alert-success');
+                            $('#alertCliente').html(ret.exibicaoMensagem.mensagemCurta);
+                            $('#alertCliente').fadeIn();
+                        }
+                        //$('#IdLegenda').val("");
+                        //$('#nomeCandidato').val("");
+                        //$('#viceCandidato').val("");
+                        //setTimeout(function () {
+                        //    $('#criarCandidato').fadeOut();
+                        //    $('#alertCandidato').fadeOut();
+                        //}, 3000);
+                        hideLoading();
+                        $("#tbClientes").DataTable().ajax.reload();
+                    }
+                });
+
+            });
+        })
+        function deletarCliente(id) {
+            showLoading();
+            $.ajax({
+                url: '/DeletarCliente/' + id,
+                method: 'DELETE',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    hideLoading();
+                    $("#tbClientes").DataTable().ajax.reload();
+                }
+            });
+        }
+
+    </script>
+}

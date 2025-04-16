@@ -9,6 +9,8 @@ namespace DesafioTecnicoECS.Domain.Mapping
         public MappingProfile()
         {
             CreateMap<ProductModel, Product>().ReverseMap();
+            CreateMap<Logradouro, LogradouroModel>().ReverseMap();
+            CreateMap<ClienteModel, Cliente>().ReverseMap();
 
         }
     }

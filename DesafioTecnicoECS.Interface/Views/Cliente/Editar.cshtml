@@ -1,0 +1,420 @@
+﻿@model DesafioTecnicoECS.Interface.Model.DtoCliente
+@{
+    ViewData["Title"] = "Editar Cliente";
+}
+
+<div class="row justify-content-md-center">
+    <div class="col-md-10">
+
+        <div class="alert" id="alertCliente" role="alert"></div>
+        <form id="editarCliente" name="editarCliente">
+            <input id="id" type="hidden" name="id" class="form-control" value="@Model.Id" />
+
+            <h2 class="text-monospace">Editar Cliente</h2>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="nome" class="control-label">Nome do Cliente</label>
+                        <input id="nome" name="nome" class="form-control" value="@Model.Nome" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="email" class="control-label">Email</label>
+                        <input id="email" name="email" class="form-control" value="@Model.Email" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="fileInput">Escolha um arquivo</label>
+                        <div class="custom-file">
+                            <input name="arquivo" type="file" class="custom-file-input" id="arquivo" accept="image/*">
+                            <label class="custom-file-label" for="fileInput" data-browse="Escolher">Selecione o arquivo</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button id="editCliente" type="button" class="btn btn-success">Salvar</button>
+            </div>
+        </form>
+        <h2 class="text-monospace mt-4">
+            Logradouros
+        </h2>
+        <form id="criarLogradouro" name="criarLogradouro">
+            <hr />
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="rua" class="control-label">Rua</label>
+                        <input id="rua" name="rua" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="numero" class="control-label">Numero</label>
+                        <input id="numero" name="numero" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="bairro" class="control-label">Bairro</label>
+                        <input id="bairro" name="bairro" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="cidade" class="control-label">Cidade</label>
+                        <input id="cidade" name="cidade" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="estado" class="control-label">Estado</label>
+                        <input id="estado" name="estado" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="cep" class="control-label">CEP</label>
+                        <input id="cep" name="cep" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="complemento" class="control-label">Complemento</label>
+                        <input id="complemento" name="complemento" class="form-control" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <button id="addLogradouro" type="button" class="btn btn-success">Salvar</button>
+            </div>
+        </form>
+        <table class="table table-striped" id="tbLogradouros">
+            <thead>
+                <tr>
+                    <th scope="col">Rua</th>
+                    <th scope="col">Numero</th>
+                    <th scope="col">Bairro</th>
+                    <th scope="col">Cidade</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">CEP</th>
+                    <th scope="col">Complemento</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modalLogradouro" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Criar Logradouro</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editarLogradouro" name="editarLogradouro">
+                    <input id="idLogradouro" type="hidden" name="id" class="form-control" />
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="rua" class="control-label">Rua</label>
+                                <input name="rua" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="numero" class="control-label">Numero</label>
+                                <input name="numero" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="bairro" class="control-label">Bairro</label>
+                                <input name="bairro" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="cidade" class="control-label">Cidade</label>
+                                <input name="cidade" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="estado" class="control-label">Estado</label>
+                                <input name="estado" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="cep" class="control-label">CEP</label>
+                                <input name="cep" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="complemento" class="control-label">Complemento</label>
+                                <input name="complemento" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="atualizaLogradouro" type="button" class="btn btn-success">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        const arqBase64 = arq => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(arq);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+        });
+
+        async function leArquivo(arq) {
+            return arqBase64(arq);
+        }
+        $(function () {
+            carregarFuncoesLogradouro();
+
+            $('#editCliente').click(async function (e) {
+
+                showLoading();
+                e.preventDefault();
+
+                // get form data
+                const form = document.forms.editarCliente;
+                const { nome, email, id } = form;
+
+                // validation
+                if (nome.value === "") {
+                    hideLoading();
+                    alert('E necessário adicionar o nome do cliente!');
+                    return false;
+                }
+                if (email.value === "") {
+                    hideLoading();
+                    alert('E necessário adicionar o email cliente!');
+                    return false;
+                }
+
+                // mount client object
+                let obj = {};
+                obj.Id = id.value;
+                obj.Nome = nome.value;
+                obj.Email = email.value;
+
+                const arq = document.getElementById('arquivo').files[0];
+                const base64 = await leArquivo(arq);
+                let ext = arq.name.split('.');
+                ext = ext[ext.length - 1];
+
+
+                obj.Logotipo = {
+                    Base64: base64.split(',')[1],
+                    Extensao: ext
+                };
+
+                // request edition
+                $.ajax({
+                    url: '/Cliente/EditarCliente',
+                    method: 'POST',
+                    data: JSON.stringify(obj),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        hideLoading();
+                    }
+                });
+
+            });
+        })
+
+        /****************************************************************** */
+
+        function carregarFuncoesLogradouro() {
+            console.log("@Url.ActionLink("ListarLogradouros", "Cliente")/" + $("#id").val())
+            new DataTable('#tbLogradouros', {
+                ajax: { url: "@Url.ActionLink("ListarLogradouros", "Cliente")/" + $("#id").val(), dataSrc: "" },
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+                },
+                columns: [
+                    { data: 'rua' },
+                    { data: 'numero' },
+                    { data: 'bairro' },
+                    { data: 'cidade' },
+                    { data: 'estado' },
+                    { data: 'cep' },
+                    { data: 'complemento' },
+                    {
+                        data: 'id', render: function (data) {
+                            if (data == '' || data == undefined)
+                                return '';
+                            return `<a class="deletarCliente" onclick="removerLogradouro('${data}')" href="javascript:void(0)">&#x274C;</a>`;
+                        }
+                    },
+                    {
+                        data: 'id', render: function (data) {
+                            if (data == '' || data == undefined)
+                                return '';
+                            return `<a class="deletarCliente" onclick="editaLogradouro('${data}')" href="javascript:void(0)">editar</a>`;
+                        }
+                    }
+                ]
+            });
+
+            $('#addLogradouro').click(function (e) {
+                showLoading();
+                e.preventDefault();
+                const form = document.forms.criarLogradouro;
+
+                const {
+                    rua
+                    , numero
+                    , bairro
+                    , cidade
+                    , estado
+                    , cep
+                    , complemento } = form;
+
+
+
+
+                const obj = {};
+                obj.Id = "";
+                obj.IdCliente = $("#id").val();
+                obj.Rua = rua.value;
+                obj.Bairro = bairro.value;
+                obj.Cidade = cidade.value;
+                obj.Estado = estado.value;
+                obj.Cep = cep.value;
+                obj.Complemento = complemento.value;
+                obj.Numero = numero.value;
+                console.log(obj);
+                $.ajax({
+                    url: '/Cliente/AdicionarLogradouro',
+                    method: 'POST',
+                    data: JSON.stringify(obj),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+
+                        hideLoading();
+                        $("#tbLogradouros").DataTable().ajax.reload();
+                    }
+                });
+
+            });
+
+            $("#atualizaLogradouro").click(function (e) {
+                showLoading();
+                e.preventDefault();
+                const form = document.forms.editarLogradouro;
+
+                const {
+                    id,
+                    rua
+                    , numero
+                    , bairro
+                    , cidade
+                    , estado
+                    , cep
+                    , complemento } = form;
+
+
+
+
+                const obj = {};
+                obj.Id = id.value;
+                obj.IdCliente = $("#id").val();
+                obj.Rua = rua.value;
+                obj.Bairro = bairro.value;
+                obj.Cidade = cidade.value;
+                obj.Estado = estado.value;
+                obj.Cep = cep.value;
+                obj.Complemento = complemento.value;
+                obj.Numero = numero.value;
+                console.log(obj);
+                $.ajax({
+                    url: '/Cliente/EditarLogradouro',
+                    method: 'POST',
+                    data: JSON.stringify(obj),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+
+                        hideLoading();
+                        $("#tbLogradouros").DataTable().ajax.reload();
+                        $('#modalLogradouro').modal('hide');
+                    }
+                });
+            });
+        }
+
+        function removerLogradouro(id) {
+            showLoading();
+            $.ajax({
+                url: '/RemoverLogradouro/' + id,
+                method: 'DELETE',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    hideLoading();
+                    $("#tbLogradouros").DataTable().ajax.reload();
+                }
+            });
+        }
+
+        function editaLogradouro(id) {
+            showLoading();
+            $.ajax({
+                url: '/Cliente/EditarLogradouro/' + id,
+                method: 'GET',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    var mapping = {
+                        "id": "id",
+                        "rua": "rua",
+                        "numero": "numero",
+                        "bairro": "bairro",
+                        "cidade": "cidade",
+                        "estado": "estado",
+                        "cep": "cep",
+                        "complemento": "complemento"
+                    };
+
+                    var form = $("form[name='editarLogradouro']");
+
+                    Object.keys(mapping).forEach(function (fieldName) {
+                        form.find("input[name='" + fieldName + "']").val(data[mapping[fieldName]]);
+                    });
+                    hideLoading();
+                    $('#modalLogradouro').modal('show');
+                }
+            });
+        }
+
+    </script>
+}

@@ -10,6 +10,8 @@ namespace DesafioTecnicoECS.Infra.Context
         {
         }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Cliente> clientes { get; set; }
+        public DbSet<Logradouro> logradouros { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

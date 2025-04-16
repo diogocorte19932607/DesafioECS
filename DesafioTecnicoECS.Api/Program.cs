@@ -29,13 +29,24 @@ builder.Services.AddDbContext<ClientContext>(options =>
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddHttpContextAccessor();
 
+
+
+
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUnitofWork, UnitOfWork>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<ILogradouroRepository, LogradouroRepository>();
 
+
+
+builder.Services.AddScoped(typeof(ClienteService<,>), typeof(ClienteService<,>));
+builder.Services.AddScoped(typeof(LogradouroService<,>), typeof(LogradouroService<,>));
 builder.Services.AddScoped(typeof(ProductService<,>), typeof(ProductService<,>));
 builder.Services.AddScoped(typeof(GenericServiceAsync<,>), typeof(GenericServiceAsync<,>));
 builder.Services.AddScoped(typeof(IServiceAsync<,>), typeof(GenericServiceAsync<,>));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+
 
 
 var appSettingsSection = builder.Configuration.GetSection("AppSettings");
