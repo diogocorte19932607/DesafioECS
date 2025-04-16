@@ -1,0 +1,125 @@
+﻿@{
+	ViewData["Title"] = "Produtos";
+}
+
+<div class="row justify-content-md-center">
+	<div class="col-md-10">
+
+		<div class="alert" id="alertCliente" role="alert"></div>
+		<form id="criarCliente" name="criarCliente">
+			<h2 class="text-monospace">Novo Produto</h2>
+			<hr />
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="code" class="control-label">Code</label>
+						<input id="code" name="code" class="form-control" />
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="name" class="control-label">Name</label>
+						<input id="name" name="name" class="form-control" />
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="price" class="control-label">Preço</label>
+						<input id="price" name="price" class="form-control" type="number" step="0.01" />
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<button id="addCliente" type="button" class="btn btn-success">ADICIONAR</button>
+			</div>
+		</form>
+
+		<h2 class="text-monospace mt-4">Produtos já cadastrados</h2>
+
+		<table class="table table-striped" id="tbClientes">
+			<thead>
+				<tr>
+					<th scope="col">Code</th>
+					<th scope="col">Name</th>
+					<th scope="col">Preço</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		$(function () {
+			new DataTable('#tbClientes', {
+				ajax: { url: "@Url.ActionLink("ListarProdutos", "Product")", dataSrc: "" },
+				language: {
+					url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+				},
+				columns: [
+					{ data: 'code' },
+					{ data: 'name' },
+					{
+						data: 'price', render: function (data) {
+							if (!data) return '';
+							return parseFloat(data).toLocaleString('pt-BR', {
+								style: 'currency',
+								currency: 'BRL'
+							});
+						}
+					},
+			   ]
+			});
+
+			$('#addCliente').click(function (e) {
+				showLoading();
+				e.preventDefault();
+
+				const code = $('#code').val();
+				const name = $('#name').val();
+				const price = $('#price').val();
+
+				if (name === "") {
+					hideLoading();
+					alert('É necessário adicionar o nome do produto!');
+					return false;
+				}
+				if (code === "") {
+					hideLoading();
+					alert('É necessário adicionar o código do produto!');
+					return false;
+				}
+				if (price === "") {
+					hideLoading();
+					alert('É necessário adicionar o preço do produto!');
+					return false;
+				}
+
+				const obj = {
+					Id: "",
+					Name: name,
+					Code: code,
+					Price: parseFloat(price)
+				};
+
+				$.ajax({
+					url: '/Product/CriarProdutos',
+					method: 'POST',
+					data: JSON.stringify(obj),
+					dataType: 'json',
+					contentType: 'application/json',
+					success: function (data) {
+						var ret = JSON.parse(data.ret);
+						if (data.sucesso) {
+							$('#alertCliente').addClass('alert-success').removeClass('alert-danger').html('Produto cadastrado com sucesso!').fadeIn();
+						} else {
+							$('#alertCliente').addClass('alert-danger').removeClass('alert-success').html(ret.exibicaoMensagem.mensagemCurta).fadeIn();
+						}
+						hideLoading();
+						$("#tbClientes").DataTable().ajax.reload();
+					}
+				});
+			});
+		});
+	</script>
+}
